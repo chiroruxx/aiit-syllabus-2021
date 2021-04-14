@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\FormDegree;
+use App\Enums\FormType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -33,8 +35,38 @@ class Form extends Model
     use HasFactory;
 
     protected $fillable = [
-        'form',
+        'type',
         'degree',
         'feature',
     ];
+
+    public function getType(): FormType
+    {
+        return new FormType($this->type);
+    }
+
+    public function getTypeLabel(): string
+    {
+        return FormType::label($this->getType());
+    }
+
+    public function getDegree(): FormDegree
+    {
+        return new FormDegree($this->degree);
+    }
+
+    public function isDegreeOften(): bool
+    {
+        return $this->getDegree()->equals(FormDegree::OFTEN());
+    }
+
+    public function isDegreeSometimes(): bool
+    {
+        return $this->getDegree()->equals(FormDegree::SOMETIMES());
+    }
+
+    public function isDegreeNone(): bool
+    {
+        return $this->getDegree()->equals(FormDegree::NONE());
+    }
 }

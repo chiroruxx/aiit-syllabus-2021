@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Enums\CompulsoryType;
+use App\Enums\Course;
+use App\Enums\FormDegree;
+use App\Enums\FormType;
+use App\Enums\LessonSatelliteType;
+use App\Enums\LessonType;
 use App\Models\Form;
 use App\Models\Lesson;
 use App\Models\Syllabus;
@@ -15,28 +21,6 @@ use SplFileObject;
 
 class SyllabusSeeder extends Seeder
 {
-    private const COURSE_INFO = 0;
-    private const COURSE_CREATION = 1;
-    private const COURSE_BUSINESS = 2;
-    private const COURSE_ALL = 3;
-    private const COMPULSORY_COMPULSORY = 0;
-    private const COMPULSORY_SELECTABLE = 1;
-    private const COMPULSORY_SELECTABLE_COMPULSORY = 2;
-    private const DEGREE_OFTEN = 2;
-    private const DEGREE_SOMETIMES = 1;
-    private const DEGREE_NONE = 0;
-    private const SATELLITE_NONE = 0;
-    private const SATELLITE_EXIST = 1;
-    private const LESSON_TYPE_IN_PERSON = 0;
-    private const LESSON_TYPE_VIDEO = 1;
-    private const LESSON_TYPE_BOTH = 2;
-    private const FORM_TYPE_MIXED = 0;
-    private const FORM_TYPE_BIDIRECTIONAL = 1;
-    private const FORM_TYPE_PERSONAL_WORK = 2;
-    private const FORM_TYPE_GROUP_WORK = 3;
-    private const FORM_TYPE_SATELLITE = 4;
-    private const FORM_TYPE_OTHER = 5;
-
     private array $header = [];
 
     /**
@@ -75,17 +59,17 @@ class SyllabusSeeder extends Seeder
                 // FIXME match式にする
                 if ($heading === 'コース名') {
                     $syllabus['course'] = match ($column) {
-                        '情報アーキテクチャコース' => self::COURSE_INFO,
-                        '創造技術コース' => self::COURSE_CREATION,
-                        '事業設計工学コース' => self::COURSE_BUSINESS,
-                        '全コース共通' => self::COURSE_ALL,
+                        '情報アーキテクチャコース' => Course::INFO,
+                        '創造技術コース' => Course::CREATION,
+                        '事業設計工学コース' => Course::BUSINESS,
+                        '全コース共通' => Course::ALL,
                         default => throw new DomainException("Course {$column} is not defined."),
                     };
                 } elseif ($heading === '必修・選択') {
                     $value = match ($column) {
-                        '必修' => self::COMPULSORY_COMPULSORY,
-                        '選択' => self::COMPULSORY_SELECTABLE,
-                        '選択必修' => self::COMPULSORY_SELECTABLE_COMPULSORY,
+                        '必修' => CompulsoryType::COMPULSORY,
+                        '選択' => CompulsoryType::SELECTABLE,
+                        '選択必修' => CompulsoryType::SELECTABLE_COMPULSORY,
                         default => throw new DomainException("Compulsory {$column} is not defined."),
                     };
                     $syllabus['compulsory'] = $value;
@@ -114,9 +98,9 @@ class SyllabusSeeder extends Seeder
                 } elseif ($heading === '程度') {
                     $formKey = $formCount % 6;
                     $value = match ($column) {
-                        '◎' => self::DEGREE_OFTEN,
-                        '○' => self::DEGREE_SOMETIMES,
-                        '―' => self::DEGREE_NONE,
+                        '◎' => FormDegree::OFTEN,
+                        '○' => FormDegree::SOMETIMES,
+                        '―' => FormDegree::NONE,
                         default => throw new DomainException("Degree {$column} is not defined.")
                     };
                     $syllabus['forms'][$formKey] = ['type' => $this->getFormType($formKey), 'degree' => $value];
@@ -133,15 +117,15 @@ class SyllabusSeeder extends Seeder
                     $syllabus['lessons'][$lessonCount]['content'] = $column;
                 } elseif ($heading === 'サテライト開講') {
                     $syllabus['lessons'][$lessonCount]['satellite'] = match ($column) {
-                        '有' => self::SATELLITE_EXIST,
-                        'ー' => self::SATELLITE_NONE,
+                        '有' => LessonSatelliteType::EXIST,
+                        'ー' => LessonSatelliteType::NONE,
                         default => throw new DomainException("Satellite {$column} is not defined."),
                     };
                 } elseif ($heading === '対面録画') {
                     $syllabus['lessons'][$lessonCount]['type'] = match ($column) {
-                        '対面' => self::LESSON_TYPE_IN_PERSON,
-                        '録画（対面無し）' => self::LESSON_TYPE_VIDEO,
-                        '録画（対面有り）' => self::LESSON_TYPE_BOTH,
+                        '対面' => LessonType::IN_PERSON,
+                        '録画（対面無し）' => LessonType::VIDEO,
+                        '録画（対面有り）' => LessonType::BOTH,
                         default => throw new DomainException("Lesson type {$column} is not defined."),
                     };
                     $lessonCount++;
@@ -188,12 +172,12 @@ class SyllabusSeeder extends Seeder
     private function getFormType(int $key): int
     {
         static $labels = [
-            self::FORM_TYPE_MIXED,
-            self::FORM_TYPE_BIDIRECTIONAL,
-            self::FORM_TYPE_PERSONAL_WORK,
-            self::FORM_TYPE_GROUP_WORK,
-            self::FORM_TYPE_SATELLITE,
-            self::FORM_TYPE_OTHER,
+            FormType::FORM_TYPE_MIXED,
+            FormType::FORM_TYPE_BIDIRECTIONAL,
+            FormType::FORM_TYPE_PERSONAL_WORK,
+            FormType::FORM_TYPE_GROUP_WORK,
+            FormType::FORM_TYPE_SATELLITE,
+            FormType::FORM_TYPE_OTHER,
         ];
 
         return $labels[$key];

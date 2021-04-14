@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\CompulsoryType;
+use App\Enums\Course;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -95,5 +97,26 @@ class Syllabus extends Model
     public function lessons(): HasMany
     {
         return $this->hasMany(Lesson::class);
+    }
+
+    public function getCourse(): Course
+    {
+        return new Course($this->course);
+
+    }
+
+    public function getCourseLabel(): string
+    {
+        return Course::label($this->getCourse());
+    }
+
+    public function getCompulsory(): CompulsoryType
+    {
+        return new CompulsoryType($this->compulsory);
+    }
+
+    public function getCompulsoryLabel(): string
+    {
+        return CompulsoryType::label($this->getCompulsory());
     }
 }

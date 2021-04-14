@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\LessonSatelliteType;
+use App\Enums\LessonType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -39,4 +41,33 @@ class Lesson extends Model
         'satellite',
         'type'
     ];
+
+    public function getSatelliteType(): LessonSatelliteType
+    {
+        return new LessonSatelliteType($this->satellite);
+    }
+
+    public function hasSatellite(): bool
+    {
+        return $this->getSatelliteType()->equals(LessonSatelliteType::EXIST());
+    }
+
+    public function getLessonType(): LessonType
+    {
+        return new LessonType($this->type);
+    }
+
+    public function isInPersonal(): bool
+    {
+        $type = $this->getLessonType();
+
+        return $type->equals(LessonType::IN_PERSON()) || $type->equals(LessonType::BOTH());
+    }
+
+    public function isVideo(): bool
+    {
+        $type = $this->getLessonType();
+
+        return $type->equals(LessonType::VIDEO()) || $type->equals(LessonType::BOTH());
+    }
 }

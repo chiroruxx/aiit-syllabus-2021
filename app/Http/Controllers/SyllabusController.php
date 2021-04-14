@@ -12,7 +12,7 @@ class SyllabusController extends Controller
 {
     public function list(): View
     {
-        $syllabi = Syllabus::all();
+        $syllabi = Syllabus::orderBy('course')->orderBy('name_ja')->get();
 
         return view('syllabus.list', compact('syllabi'));
     }

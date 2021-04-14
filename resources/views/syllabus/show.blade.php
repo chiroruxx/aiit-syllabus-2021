@@ -1,98 +1,132 @@
-@php
-    /**
-     * @var \App\Models\Syllabus $syllabus
-     */
-@endphp
+@extends('layout')
 
-    <!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>{{ $syllabus->name_ja }} - AIIT 2021 syllabus</title>
-    <meta name="robots" content="noindex">
-</head>
-<body>
-<h1>{{ $syllabus->name_ja }}</h1>
-<h2>授業名</h2>
-<dl>
-    <dt>ja</dt>
-    <dd>{{ $syllabus->name_ja }}</dd>
-    <dt>en</dt>
-    <dd>{{ $syllabus->name_en }}</dd>
-</dl>
-<h2>必修・選択</h2>
-<p>{{ $syllabus->getCompulsoryLabel() }}</p>
-<h2>単位</h2>
-<p>{{ $syllabus->credit }}</p>
-<h2>学期</h2>
-<p>{{ $syllabus->quarter }}Q</p>
-<h2>教員名</h2>
-<p>{{ $syllabus->teacher }}</p>
-<h2>概要</h2>
-<p>{{ $syllabus->abstract }}</p>
-<h2>目的・狙い</h2>
-<p>{{ $syllabus->purpose }}</p>
-<h2>前提知識（履修条件）</h2>
-<p>{{ $syllabus->precondition }}</p>
-<h2>到達目標</h2>
-<dl>
-    <dt>上位到達目標</dt>
-    <dd>{{ $syllabus->higher_goal }}</dd>
-    <dt>下位到達目標</dt>
-    <dd>{{ $syllabus->lower_goal }}</dd>
-</dl>
-<h2>授業の内容</h2>
-<p>{{ $syllabus->inside_learning }}</p>
-<h2>授業外の学習</h2>
-<p>{{ $syllabus->outside_learning }}</p>
-<h2>成績評価</h2>
-<p>{{ $syllabus->evaluation }}</p>
-<h2>教科書・教材</h2>
-<p>{{ $syllabus->text }}</p>
-<h2>参考図書</h2>
-<p>{{ $syllabus->reference }}</p>
-<h2>授業の形態</h2>
-<ul>
-    @foreach($syllabus->forms as $form)
-        <li>
-            <h3>{{ $form->getTypeLabel() }}</h3>
-            <h4>実施</h4>
-            <p>
-                @if($form->isDegreeOften())
-                    ◎
-                @elseif($form->isDegreeSometimes())
-                    ○
-                @elseif($form->isDegreeNone())
-                    -
-                @endif
-            </p>
-            <h4>特徴・留意点</h4>
-            <p>{{ $form->feature }}</p>
-        </li>
-    @endforeach
-</ul>
-<h2>授業の計画</h2>
-<ul>
-    @foreach($syllabus->lessons as $lesson)
-        <li>
-            <h3>回数</h3>
-            <p>第{{ $lesson->number }}回</p>
-            <h3>内容</h3>
-            <p>{{ $lesson->content }}</p>
-            <h3>サテライト開講</h3>
-            <p>{{ $lesson->hasSatellite() ? '有' : '無' }}</p>
-            <h3>形式</h3>
-            <ul>
-                @if($lesson->isInPersonal())
-                    <li>対面</li>
-                @endif
-                @if($lesson->isVideo())
-                    <li>録画</li>
-                @endif
-            </ul>
-        </li>
-    @endforeach
-</ul>
+@section('title', "{$syllabus->name_ja} - AIIT 2021 syllabus")
 
-<a href="/">TOP</a>
-</body>
-</html>
+@section('content')
+    @php
+        /**
+         * @var \App\Models\Syllabus $syllabus
+         */
+    @endphp
+
+    <header class="w-full py-16 bg-yellow-300">
+        <h2 class="text-3xl ml-4"><a href="/">AIIT 2021 syllabus</a></h2>
+    </header>
+
+    <div class="container w-4/5 mx-auto">
+        <div class="my-16 flex flex-row justify-between flex-wrap space-y-4">
+            <h3 class="text-3xl flex">{{ $syllabus->name_ja }} ( {{ $syllabus->name_en }} )</h3>
+            <div class="flex mt-auto">
+                @include('icons.user') {{ $syllabus->teacher }}
+            </div>
+        </div>
+        <div class="flex flex-row space-x-4">
+            <div
+                class="w-16 h-16 rounded-md bg-yellow-300 text-white flex items-center justify-center text-2xl font-extrabold">{{ $syllabus->getCompulsoryLabel() }}</div>
+            <div
+                class="w-16 h-16 rounded-md bg-yellow-300 text-white flex items-center justify-center text-2xl font-extrabold">
+                <span class="align-bottom">{{ $syllabus->credit }}<span class="text-sm">単位</span></span></div>
+            <div
+                class="w-16 h-16 rounded-md bg-yellow-300 text-white flex items-center justify-center text-2xl font-extrabold">
+                <span class="align-bottom">{{ $syllabus->quarter }}<span class="text-sm">Q</span></span></div>
+        </div>
+
+        <div class="border-b mt-16 mb-4">
+            <h3 class="text-2xl">概要</h3>
+        </div>
+        <p class="pl-4">{!! nl2br(e($syllabus->abstract)) !!}</p>
+
+        <div class="border-b mt-16 mb-4">
+            <h3 class="text-2xl">目的・狙い</h3>
+        </div>
+        <p class="pl-4">{!! nl2br(e($syllabus->purpose)) !!}</p>
+
+        <h4 class="text-xl my-4">到達目標</h4>
+        <ul class="pl-4">
+            <li class="mb-2">@include('icons.arrow-circle-down') {{ $syllabus->lower_goal }}</li>
+            <li class="mb-2">@include('icons.arrow-circle-up') {{ $syllabus->higher_goal }}</li>
+        </ul>
+
+        <div class="border-b mt-16 mb-4">
+            <h3 class="text-2xl">前提知識（履修条件）</h3>
+        </div>
+        <p class="pl-4">{!! nl2br(e($syllabus->precondition)) !!}</p>
+
+        <div class="border-b mt-16 mb-4">
+            <h3 class="text-2xl">授業の内容</h3>
+        </div>
+        <p class="pl-4">{!! nl2br(e($syllabus->inside_learning)) !!}</p>
+
+        <div class="border-b mt-16 mb-4">
+            <h3 class="text-2xl">授業外の学習</h3>
+        </div>
+        <p class="pl-4">{!! nl2br(e($syllabus->outside_learning)) !!}</p>
+
+        <div class="border-b mt-16 mb-4">
+            <h3 class="text-2xl">成績評価</h3>
+        </div>
+        <p class="pl-4">{!! nl2br(e($syllabus->evaluation)) !!}</p>
+
+        <div class="border-b mt-16 mb-4">
+            <h3 class="text-2xl">教科書・教材</h3>
+        </div>
+        <p class="pl-4">{!! nl2br(e($syllabus->text)) !!}</p>
+
+        <div class="border-b mt-16 mb-4">
+            <h3 class="text-2xl">参考図書</h3>
+        </div>
+        <p class="pl-4">{!! nl2br(e($syllabus->reference)) !!}</p>
+
+        <div class="border-b mt-16 mb-4">
+            <h3 class="text-2xl">授業の形態</h3>
+        </div>
+        <div class="flex flex-column flex-wrap pl-4">
+            @foreach($syllabus->forms as $form)
+                <div class="flex flex-row w-full h-12 space-x-4 items-center pl-4 even:bg-gray-100 hover:bg-gray-200">
+                    <div class="flex flex-none w-5">
+                        @if($form->isDegreeOften())
+                            ◎
+                        @elseif($form->isDegreeSometimes())
+                            ○
+                        @elseif($form->isDegreeNone())
+                            -
+                        @endif
+                    </div>
+                    <div class="flex flex-shrink-0 w-52">
+                        {{ $form->getTypeLabel() }}
+                    </div>
+                    <div class="flex flex-grow">
+                        {{ $form->feature }}
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        <div class="border-b mt-16 mb-4">
+            <h3 class="text-2xl">授業の計画</h3>
+        </div>
+        <div class="flex flex-column flex-wrap pl-4">
+            @foreach($syllabus->lessons as $lesson)
+                <div class="flex flex-row w-ful h-32 min-w-full space-x-4 items-center pl-4 pr-4 even:bg-gray-100 hover:bg-gray-200">
+                    <div class="flex flex-none w-5">
+                        {{ $lesson->number }}
+                    </div>
+                    <div class="flex flex-grow">
+                        {{ $lesson->content }}
+                    </div>
+                    <div class="flex flex-none w-5">
+                        {{ $lesson->hasSatellite() ? '有' : '無' }}
+                    </div>
+                    <ul class="flex flex-none w-16">
+                        @if($lesson->isInPersonal())
+                            <li>対面</li>
+                        @endif
+                        @if($lesson->isVideo())
+                            <li>録画</li>
+                        @endif
+                    </ul>
+                </div>
+            @endforeach
+        </div>
+    </div>
+@endsection

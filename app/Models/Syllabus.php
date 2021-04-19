@@ -107,7 +107,7 @@ class Syllabus extends Model
 
     public function getCourseLabel(): string
     {
-        return Course::label($this->getCourse());
+        return $this->getCourse()->label();
     }
 
     public function getCompulsory(): CompulsoryType

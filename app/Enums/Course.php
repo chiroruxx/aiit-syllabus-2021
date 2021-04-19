@@ -20,8 +20,8 @@ class Course extends Enum
         self::ALL => '全コース共通',
     ];
 
-    public static function label(self $course): string
+    public function label(): string
     {
-        return self::$labels[$course->getValue()];
+        return self::$labels[$this->getValue()];
     }
 }

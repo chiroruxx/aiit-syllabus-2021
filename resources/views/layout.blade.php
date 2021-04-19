@@ -12,7 +12,12 @@
     @yield('content')
 
     <div class="mt-32 mb-12">
-        <a class="underline" href="/">TOP</a>
+        <div class="flex flex-wrap justify-between pt-4 opacity-60">
+            <a class="underline" href="/">AIIT 2021 syllabus</a>
+            <a href="https://github.com/chiroruxx/aiit-syllabus-2021">
+                <img src="/image/github.png" alt="">
+            </a>
+        </div>
     </div>
 </div>
 </body>

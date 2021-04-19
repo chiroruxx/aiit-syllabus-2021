@@ -33,7 +33,7 @@ class SyllabusSeeder extends Seeder
     {
         $syllabi = [];
 
-        $path = storage_path('app/seeds.csv');
+        $path = storage_path('app/seeds/syllabi.csv');
         if (!file_exists($path)) {
             echo("Cannot find seed file at '{$path}'");
         }

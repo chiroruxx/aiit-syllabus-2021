@@ -42,6 +42,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read int|null $forms_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Lesson[] $lessons
  * @property-read int|null $lessons_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Model[] $models
+ * @property-read int|null $models_count
  * @method static \Illuminate\Database\Eloquent\Builder|Syllabus whereAbstract($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Syllabus whereCompulsory($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Syllabus whereCourse($value)
@@ -99,10 +101,14 @@ class Syllabus extends Model
         return $this->hasMany(Lesson::class);
     }
 
+    public function models(): HasMany
+    {
+        return $this->hasMany(\App\Models\Model::class);
+    }
+
     public function getCourse(): Course
     {
         return new Course($this->course);
-
     }
 
     public function getCourseLabel(): string

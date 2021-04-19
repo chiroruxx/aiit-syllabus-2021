@@ -6,7 +6,8 @@
         /**
          * @var \Illuminate\Support\Collection&\App\Models\Syllabus[] $syllabi
          * @var \App\Enums\Course[] $courses
-         * @var int[] $selectedCourses
+         * @var int[] $quarters
+         * @var int[][] $selected
          */
     @endphp
     <header class="w-full py-16 bg-yellow-300">
@@ -18,18 +19,33 @@
             <span>コース: </span>
             <div>
                 @foreach($courses as $course)
-                    <label>
+                    <label class="mr-4">
                         <input type="checkbox"
-                               name="courses[]"
+                               name="search[courses][]"
                                value="{{ $course->getValue()}}"
-                               @if(in_array($course->getValue(), $selectedCourses, true)) checked="checked" @endif
+                               @if(in_array($course->getValue(), $selected['courses'], true)) checked="checked" @endif
                         >
                         {{ $course->label() }}
                     </label>
                 @endforeach
             </div>
         </div>
-        <button type="submit" class="border rounded-md px-4 py-2 bg-transparent">
+        <div class="flex flex-row flex-wrap space-x-4 my-4">
+            <span>時期: </span>
+            <div>
+                @foreach($quarters as $quarter)
+                    <label class="mr-4">
+                        <input type="checkbox"
+                               name="search[quarters][]"
+                               value="{{ $quarter}}"
+                               @if(in_array($quarter, $selected['quarters'], true)) checked="checked" @endif
+                        >
+                        {{ $quarter }}Q
+                    </label>
+                @endforeach
+            </div>
+        </div>
+        <button type="submit" class="border rounded-md mt-8 px-4 py-2 bg-transparent">
             @include('icons.search')
         </button>
     </form>

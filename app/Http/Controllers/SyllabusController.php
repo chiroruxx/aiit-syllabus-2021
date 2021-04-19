@@ -15,35 +15,46 @@ class SyllabusController extends Controller
 {
     public function list(Request $request, SyllabusService $service): View
     {
-        $selectedCourses = $this->getValidatedData($request)['courses'];
+        $params = $this->getSearchParameters($request);
 
-        $syllabi = $service->list($selectedCourses);
+        $syllabi = $service->list($params);
 
         $courses = Course::values();
+        $quarters = [1, 2, 3, 4];
 
-        if (count($selectedCourses) === 0) {
-            $selectedCourses = array_values(Course::toArray());
-        }
+        $selected = [];
+        $selected['courses'] = count($params['courses']) > 0 ? $params['courses'] : array_values(Course::toArray());
+        $selected['quarters'] = count($params['quarters']) > 0 ? $params['quarters'] : $quarters;
 
-        return view('syllabus.list', compact('syllabi', 'courses', 'selectedCourses'));
+        return view(
+            'syllabus.list',
+            compact('syllabi', 'courses', 'quarters', 'selected')
+        );
     }
 
-    private function getValidatedData(Request $request): array
+    private function getSearchParameters(Request $request): array
     {
         $validated = $this->getValidationFactory()->make($request->query(), [
-            'courses' => ['array'],
-            'courses.*' => [Rule::in(Course::toArray())],
+            'search' => ['array'],
+            'search.courses' => ['array'],
+            'search.courses.*' => [Rule::in(Course::toArray())],
+            'search.quarters' => ['array'],
+            'search.quarters.*' => ['integer', 'min:1', 'max:4'],
         ])->validated();
 
-        $validated['courses'] = $validated['courses'] ?? [];
+        $search = $validated['search'] ?? [];
 
-        if (!is_array($validated['courses'])) {
-            $validated['courses'] = [];
+        foreach (['courses', 'quarters'] as $key) {
+            $search[$key] = $search[$key] ?? [];
+
+            if (!is_array($search[$key])) {
+                $search[$key] = [];
+            }
+
+            $search[$key] = array_map(array: $search[$key], callback: fn(int|string $course) => (int)$course);
         }
 
-        $validated['courses'] = array_map(array: $validated['courses'], callback: fn(int|string $course) => (int)$course);
-
-        return $validated;
+        return $search;
     }
 
     public function show(Syllabus $syllabus): View

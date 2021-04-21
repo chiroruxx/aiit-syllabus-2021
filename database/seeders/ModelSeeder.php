@@ -110,9 +110,11 @@ class ModelSeeder extends Seeder
             }
 
             // 誤植修正
-            if ($name === 'DESING[RE]THINKING ') {
-                $name = 'DESIGN［RE］THINKING';
-            }
+            $name = match ($name) {
+                'DESING[RE]THINKING ' => 'DESIGN［RE］THINKING',
+                'ビックデータ解析特論' => 'ビッグデータ解析特論',
+                default => $name,
+            };
 
             $model['name'] = trim($name);
             $models[] = $model;

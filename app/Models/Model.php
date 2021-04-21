@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ModelType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
  * @property int $id
  * @property int $syllabus_id
  * @property int $type
- * @property int $is_basic
+ * @property bool $is_basic
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|Model newModelQuery()
@@ -28,4 +29,13 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
 class Model extends BaseModel
 {
     use HasFactory;
+
+    protected $casts = [
+        'is_basic' => 'boolean'
+    ];
+
+    public function getType(): ModelType
+    {
+        return new ModelType($this->type);
+    }
 }

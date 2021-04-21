@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Enums\ModelType;
 use App\Models\Model;
 use App\Models\Syllabus;
 use DomainException;
@@ -49,7 +50,7 @@ class ModelSeeder extends Seeder
             foreach ($row as $key => $column) {
                 $heading = $this->getHeading($key);
 
-                if ($column === null) {
+                if ($column === null || $column === '') {
                     continue;
                 }
 
@@ -59,10 +60,10 @@ class ModelSeeder extends Seeder
                 }
 
                 $modelType = match ($heading) {
-                    'ストラテジスト' => 0,
-                    'システムアーキテクト' => 1,
-                    'プロジェクトマネージャ' => 2,
-                    'テクニカルスペシャリスト' => 3,
+                    'ストラテジスト' => ModelType::STRATEGIST,
+                    'システムアーキテクト' => ModelType::SYSTEM_ARCHITECT,
+                    'プロジェクトマネージャ' => ModelType::PROJECT_MANAGER,
+                    'テクニカルスペシャリスト' => ModelType::TECHNICAL_SPECIALIST,
                     default => throw new DomainException("Name {$column} is not defined."),
                 };
 

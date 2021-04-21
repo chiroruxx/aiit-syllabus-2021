@@ -6,6 +6,7 @@
         /**
          * @var \Illuminate\Support\Collection&\App\Models\Syllabus[] $syllabi
          * @var \App\Enums\Course[] $courses
+         * @var \App\Enums\ModelType[] $modelTypes
          * @var int[] $quarters
          * @var int[][] $selected
          */
@@ -41,6 +42,21 @@
                                @if(in_array($quarter, $selected['quarters'], true)) checked="checked" @endif
                         >
                         {{ $quarter }}Q
+                    </label>
+                @endforeach
+            </div>
+        </div>
+        <div class="flex flex-row flex-wrap space-x-4 my-4">
+            <span>人物像: </span>
+            <div>
+                @foreach($modelTypes as $modelType)
+                    <label class="mr-4">
+                        <input type="checkbox"
+                               name="search[model][types][]"
+                               value="{{ $modelType->getValue()}}"
+                               @if(in_array($modelType->getValue(), $selected['model']['types'], true)) checked="checked" @endif
+                        >
+                        {{ $modelType->label() }}
                     </label>
                 @endforeach
             </div>

@@ -80,6 +80,10 @@ class SyllabusSeeder extends Seeder
                 } elseif ($heading === '科目群') {
                     $syllabus['group'] = $column;
                 } elseif ($heading === '科目名') {
+                    // 謎のスペースが空いているので取る
+                    if ($column === 'DESIGN ［RE］THINKING') {
+                        $column = str_replace(' ［', '［', $column);
+                    }
                     $syllabus['name_ja'] = $column;
                 } elseif ($heading === '（英文表記）') {
                     $syllabus['name_en'] = $column;

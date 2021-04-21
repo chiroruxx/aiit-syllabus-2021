@@ -26,8 +26,37 @@ class ModelSeeder extends Seeder
     public function run()
     {
         $models = [];
+//        $csvList = ['ia_models.csv', 'bd_models.csv'];
+        $csvList = ['ia_models.csv', 'ct_models.csv', 'bd_models.csv'];
+        foreach ($csvList as $csv) {
+            $models = array_merge($models, $this->readCsv("app/seeds/{$csv}"));
+            $this->setHeader([]);
+        }
 
-        $path = storage_path('app/seeds/ia_models.csv');
+        DB::transaction(
+            function () use ($models) {
+                foreach ($models as $record) {
+                    /** @var Syllabus $syllabus */
+                    $syllabus = Syllabus::whereNameJa($record['name'])
+                        ->orWhere('name_ja', str_replace(' ', '', $record['name']))
+                        ->first();
+
+                    if ($syllabus === null) {
+                        throw new ModelNotFoundException("Syllabus {$record['name']} is not found.");
+                    }
+
+                    $models = array_map(fn(array $attributes): Model => new Model($attributes), $record['types']);
+                    $syllabus->models()->saveMany($models);
+                }
+            }
+        );
+    }
+
+    private function readCsv(string $relativePath): array
+    {
+        $models = [];
+
+        $path = storage_path($relativePath);
         if (!file_exists($path)) {
             echo("Cannot find seed file at '{$path}'");
         }
@@ -54,7 +83,7 @@ class ModelSeeder extends Seeder
                     continue;
                 }
 
-                if ($heading === '科目名') {
+                if (in_array($heading, ['科目名', '科目'], strict: true)) {
                     $name = $column;
                     continue;
                 }
@@ -64,6 +93,13 @@ class ModelSeeder extends Seeder
                     'システムアーキテクト' => ModelType::SYSTEM_ARCHITECT,
                     'プロジェクトマネージャ' => ModelType::PROJECT_MANAGER,
                     'テクニカルスペシャリスト' => ModelType::TECHNICAL_SPECIALIST,
+                    'アントレプレナーモデル' => ModelType::ENTREPRENEUR,
+                    'イントラプレナーモデル' => ModelType::INTOREPRENEUR,
+                    '事業承継モデル' => ModelType::BUSINESS_SUCCESSION,
+                    'インダストリアルデザイナー' => ModelType::INDUSTRIAL_DESIGNER,
+                    '開発設計エンジニア' => ModelType::DEVELOPMENT_DESIGN_ENGINEER,
+                    'AI・データサイエンティスト' => ModelType::AI_DATA_SCIENTIST,
+                    'グローバルエンジニアリング' => ModelType::GLOBAL_ENGINEERING,
                     default => throw new DomainException("Name {$column} is not defined."),
                 };
 
@@ -73,27 +109,15 @@ class ModelSeeder extends Seeder
                 ];
             }
 
-            $model['name'] = $name;
+            // 誤植修正
+            if ($name === 'DESING[RE]THINKING ') {
+                $name = 'DESIGN［RE］THINKING';
+            }
+
+            $model['name'] = trim($name);
             $models[] = $model;
         }
-
-        DB::transaction(
-            function () use ($models) {
-                foreach ($models as $record) {
-                    /** @var Syllabus $syllabus */
-                    $syllabus = Syllabus::whereNameJa($record['name'])
-                        ->orWhere('name_ja', str_replace(' ', '', $record['name']))
-                        ->first();
-
-                    if ($syllabus === null) {
-                        throw new ModelNotFoundException("Syllabus {$record['name']} is not found.");
-                    }
-
-                    $models = array_map(fn(array $attributes): Model => new Model($attributes), $record['types']);
-                    $syllabus->models()->saveMany($models);
-                }
-            }
-        );
+        return $models;
     }
 
     private function hasHeader(): bool

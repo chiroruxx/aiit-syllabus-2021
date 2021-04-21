@@ -20,11 +20,12 @@
             <span>コース: </span>
             <div>
                 @foreach($courses as $course)
-                    <label class="mr-4">
+                    <label class="inline-block mr-4">
                         <input type="checkbox"
                                name="search[courses][]"
                                value="{{ $course->getValue()}}"
                                @if(in_array($course->getValue(), $selected['courses'], true)) checked="checked" @endif
+                               class="flex-none"
                         >
                         {{ $course->label() }}
                     </label>
@@ -33,9 +34,9 @@
         </div>
         <div class="flex flex-row flex-wrap space-x-4 my-4">
             <span>時期: </span>
-            <div>
+            <div class="flex flex-row">
                 @foreach($quarters as $quarter)
-                    <label class="mr-4">
+                    <label class="inline-block mr-4">
                         <input type="checkbox"
                                name="search[quarters][]"
                                value="{{ $quarter}}"
@@ -50,7 +51,7 @@
             <span>人物像: </span>
             <div>
                 @foreach($modelTypes as $modelType)
-                    <label class="mr-4">
+                    <label class="inline-block mr-4">
                         <input type="checkbox"
                                name="search[model][types][]"
                                value="{{ $modelType->getValue()}}"

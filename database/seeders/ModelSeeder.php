@@ -113,6 +113,7 @@ class ModelSeeder extends Seeder
             $name = match ($name) {
                 'DESING[RE]THINKING ' => 'DESIGN［RE］THINKING',
                 'ビックデータ解析特論' => 'ビッグデータ解析特論',
+                'ET（Embedded Technology）特別演習' => 'ET(Embedded Technology)特別演習',
                 default => $name,
             };
 

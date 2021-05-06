@@ -16,7 +16,7 @@
     </header>
 
     <form method="GET" class="my-16 pl-4">
-        <div class="flex flex-row flex-wrap space-x-4 my-4">
+        <div class="grid gap-y-4" style="grid-template-columns: 5rem 1fr;">
             <span>コース: </span>
             <div>
                 @foreach($courses as $course)
@@ -31,8 +31,6 @@
                     </label>
                 @endforeach
             </div>
-        </div>
-        <div class="flex flex-row flex-wrap space-x-4 my-4">
             <span>時期: </span>
             <div class="flex flex-row">
                 @foreach($quarters as $quarter)
@@ -46,8 +44,6 @@
                     </label>
                 @endforeach
             </div>
-        </div>
-        <div class="flex flex-row flex-wrap space-x-4 my-4">
             <span>人物像: </span>
             <div>
                 @foreach($modelTypes as $modelType)

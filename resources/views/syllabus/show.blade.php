@@ -82,7 +82,7 @@
         </div>
         <div class="flex flex-column flex-wrap pl-4">
             @foreach($syllabus->forms as $form)
-                <div class="flex flex-row w-full h-12 space-x-4 items-center pl-4 even:bg-gray-100 hover:bg-gray-200">
+                <div class="flex flex-row w-full h-32 space-x-4 items-center pl-4 even:bg-gray-100 hover:bg-gray-200">
                     <div class="flex flex-none w-5">
                         @if($form->isDegreeOften())
                             ◎

@@ -7,6 +7,12 @@
         /**
          * @var \App\Models\Syllabus $syllabus
          */
+
+        $items = [
+            ['content' => $syllabus->getCompulsoryLabel()],
+            ['content' => $syllabus->credit, 'unit' => '単位'],
+            ['content' => $syllabus->quarter, 'unit' => 'Q'],
+        ];
     @endphp
 
     <header class="w-full py-16 bg-yellow-300">
@@ -20,16 +26,7 @@
                 @include('icons.user') {{ $syllabus->teacher }}
             </div>
         </div>
-        <div class="flex flex-row space-x-4">
-            <div
-                class="w-16 h-16 rounded-md bg-yellow-300 text-white flex items-center justify-center text-2xl font-extrabold">{{ $syllabus->getCompulsoryLabel() }}</div>
-            <div
-                class="w-16 h-16 rounded-md bg-yellow-300 text-white flex items-center justify-center text-2xl font-extrabold">
-                <span class="align-bottom">{{ $syllabus->credit }}<span class="text-sm">単位</span></span></div>
-            <div
-                class="w-16 h-16 rounded-md bg-yellow-300 text-white flex items-center justify-center text-2xl font-extrabold">
-                <span class="align-bottom">{{ $syllabus->quarter }}<span class="text-sm">Q</span></span></div>
-        </div>
+        <x-item-box-list :items="$items" />
 
         <div class="border-b mt-16 mb-4">
             <h3 class="text-2xl">概要</h3>

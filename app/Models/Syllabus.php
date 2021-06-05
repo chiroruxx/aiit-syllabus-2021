@@ -9,6 +9,7 @@ use App\Enums\Course;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * App\Models\Syllabus
@@ -44,6 +45,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read int|null $lessons_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Model[] $models
  * @property-read int|null $models_count
+ * @property-read \App\Models\Score|null $score
  * @method static \Illuminate\Database\Eloquent\Builder|Syllabus whereAbstract($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Syllabus whereCompulsory($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Syllabus whereCourse($value)
@@ -104,6 +106,11 @@ class Syllabus extends Model
     public function models(): HasMany
     {
         return $this->hasMany(\App\Models\Model::class);
+    }
+
+    public function score(): HasOne
+    {
+        return $this->hasOne(Score::class);
     }
 
     public function getCourse(): Course

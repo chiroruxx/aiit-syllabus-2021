@@ -105,6 +105,7 @@ class ScoreSeeder extends Seeder
                 'IT・CIO特論コース' => 'IT・CIO特論',
                 '統計・数理軽量ファインナンス特別演習' => '統計・数理計量ファイナンス特別演習',
                 'DESIGN ［RE］ THINKING' => 'DESIGN［RE］THINKING',
+                'ET（Embedded Technology）特別演習' => 'ET(Embedded Technology)特別演習',
                 default => $name,
             };
 

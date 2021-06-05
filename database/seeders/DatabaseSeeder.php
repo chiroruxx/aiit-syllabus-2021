@@ -15,5 +15,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([SyllabusSeeder::class]);
         $this->call([ModelSeeder::class]);
+        $this->call([ScoreSeeder::class]);
     }
 }

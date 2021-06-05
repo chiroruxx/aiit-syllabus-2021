@@ -48,4 +48,38 @@ class Score extends Model
         'score_1',
         'score_0',
     ];
+
+    public function getAverage(): float
+    {
+        $list = $this->getScoreList();
+        $average = array_sum($list) / count($list);
+        return floor($average * 10) / 10;
+    }
+
+    public function getMedian(): int
+    {
+        $list = $this->getScoreList();
+        $center = floor(count($list) / 2);
+        return $list[$center - 1];
+    }
+
+    private function getScoreList(): array
+    {
+        $list = [];
+        $attributes = [
+            'score_0',
+            'score_1',
+            'score_2',
+            'score_3',
+            'score_4',
+            'score_5',
+        ];
+
+        foreach ($attributes as $score => $attribute) {
+            $scores = array_fill(0, $this->$attribute, $score);
+            $list = array_merge($list, $scores);
+        }
+
+        return $list;
+    }
 }

@@ -125,5 +125,57 @@
                 </div>
             @endforeach
         </div>
+
+        @if($syllabus->hasScore())
+            <div class="border-b mt-16 mb-4">
+                <h3 class="text-2xl">成績分布</h3>
+            </div>
+
+            <table class="border-collapse pl-4 mb-8">
+                <tbody>
+                <tr class="even:bg-gray-100 hover:bg-gray-200">
+                    <th class="py-2 px-4 text-left border-r-2 border-gray-400 border-double">平均値</th>
+                    <td class="py-2 px-4">{{ $syllabus->score->getAverage() }}</td>
+                </tr>
+                <tr class="even:bg-gray-100 hover:bg-gray-200">
+                    <th class="py-2 px-4 text-left border-r-2 border-gray-400 border-double">中央値</th>
+                    <td class="py-2 px-4">{{ $syllabus->score->getMedian() }}</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <table class="border-collapse pl-4">
+                <tbody>
+                <tr class="even:bg-gray-100 hover:bg-gray-200">
+                    <th class="py-2 px-4 text-left border-r-2 border-gray-400 border-double">受講者数</th>
+                    <td class="py-2 px-4">{{ $syllabus->score->participants }} 人</td>
+                </tr>
+                <tr class="even:bg-gray-100 hover:bg-gray-200">
+                    <th class="py-2 px-4 text-left border-r-2 border-gray-400 border-double">成績5</th>
+                    <td class="py-2 px-4">{{$syllabus->score->score_5}}</td>
+                </tr>
+                <tr class="even:bg-gray-100 hover:bg-gray-200">
+                    <th class="py-2 px-4 text-left border-r-2 border-gray-400 border-double">成績4</th>
+                    <td class="py-2 px-4">{{$syllabus->score->score_4}}</td>
+                </tr>
+                <tr class="even:bg-gray-100 hover:bg-gray-200">
+                    <th class="py-2 px-4 text-left border-r-2 border-gray-400 border-double">成績3</th>
+                    <td class="py-2 px-4">{{$syllabus->score->score_3}}</td>
+                </tr>
+                <tr class="even:bg-gray-100 hover:bg-gray-200">
+                    <th class="py-2 px-4 text-left border-r-2 border-gray-400 border-double">成績2</th>
+                    <td class="py-2 px-4">{{$syllabus->score->score_2}}</td>
+                </tr>
+                <tr class="even:bg-gray-100 hover:bg-gray-200">
+                    <th class="py-2 px-4 text-left border-r-2 border-gray-400 border-double">成績1</th>
+                    <td class="py-2 px-4">{{$syllabus->score->score_1}}</td>
+                </tr>
+                <tr class="even:bg-gray-100 hover:bg-gray-200">
+                    <th class="py-2 px-4 text-left border-r-2 border-gray-400 border-double">成績0</th>
+                    <td class="py-2 px-4">{{$syllabus->score->score_0}}</td>
+                </tr>
+                </tbody>
+            </table>
+        @endif
     </div>
 @endsection

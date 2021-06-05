@@ -132,4 +132,8 @@ class Syllabus extends Model
     {
         return CompulsoryType::label($this->getCompulsory());
     }
+
+    public function hasScore(): bool {
+        return $this->score !== null;
+    }
 }

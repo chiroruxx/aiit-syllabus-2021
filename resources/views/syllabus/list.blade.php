@@ -15,6 +15,7 @@
         <h1 class="text-3xl ml-4">AIIT 2021 syllabus</h1>
     </header>
 
+    <div id="search"></div>
     <form method="GET" class="my-16 pl-4">
         <div class="grid gap-y-4" style="grid-template-columns: 5rem 1fr;">
             <span>コース: </span>

@@ -20,20 +20,9 @@ class SyllabusController extends Controller
 
         $syllabi = $service->list($params);
 
-        $courses = Course::values();
-        $modelTypes = ModelType::values();
-        $quarters = [1, 2, 3, 4];
-
-        $selected = [];
-        $selected['courses'] = count($params['courses']) > 0 ? $params['courses'] : array_values(Course::toArray());
-        $selected['quarters'] = count($params['quarters']) > 0 ? $params['quarters'] : $quarters;
-        $selected['model']['types'] = count($params['model']['types']) > 0 ? $params['model']['types'] : array_values(
-            ModelType::toArray()
-        );
-
         return view(
             'syllabus.list',
-            compact('syllabi', 'courses', 'modelTypes', 'quarters', 'selected')
+            compact('syllabi')
         );
     }
 

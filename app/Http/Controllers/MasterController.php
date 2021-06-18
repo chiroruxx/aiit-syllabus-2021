@@ -12,20 +12,22 @@ class MasterController extends Controller
 {
     public function list(): JsonResponse
     {
-        $courses = Course::all();
-        $courses = $courses->map(fn(Course $course): array => [
-            'label' => $course->name,
-            'value' => $course->id,
-        ])->values()->all();
+        $courses = Course::with('models')->get();
+        $courses = $courses->map(
+            fn(Course $course): array => [
+                'label' => $course->name,
+                'value' => $course->id,
+                'models' => $course->models->map(
+                    fn(Model $model): array => [
+                        'label' => $model->name,
+                        'value' => $model->id,
+                    ]
+                )->values()->all(),
+            ]
+        )->values()->all();
 
         $quarters = [1, 2, 3, 4];
 
-        $models = Model::all();
-        $models = $models->map(fn(Model $model): array => [
-            'label' => $model->name,
-            'value' => $model->id,
-        ])->values()->all();
-
-        return response()->json(compact('courses', 'quarters', 'models'));
+        return response()->json(compact('courses', 'quarters'));
     }
 }

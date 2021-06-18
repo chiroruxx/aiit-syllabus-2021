@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Enums\Course;
-use App\Enums\ModelType;
 use App\Models\Syllabus;
 use App\Services\SyllabusService;
 use Illuminate\Contracts\View\View;
@@ -20,20 +18,9 @@ class SyllabusController extends Controller
 
         $syllabi = $service->list($params);
 
-        $courses = Course::values();
-        $modelTypes = ModelType::values();
-        $quarters = [1, 2, 3, 4];
-
-        $selected = [];
-        $selected['courses'] = count($params['courses']) > 0 ? $params['courses'] : array_values(Course::toArray());
-        $selected['quarters'] = count($params['quarters']) > 0 ? $params['quarters'] : $quarters;
-        $selected['model']['types'] = count($params['model']['types']) > 0 ? $params['model']['types'] : array_values(
-            ModelType::toArray()
-        );
-
         return view(
             'syllabus.list',
-            compact('syllabi', 'courses', 'modelTypes', 'quarters', 'selected')
+            compact('syllabi')
         );
     }
 
@@ -44,10 +31,10 @@ class SyllabusController extends Controller
             [
                 'search' => ['array'],
                 'search.courses' => ['array'],
-                'search.courses.*' => [Rule::in(Course::toArray())],
+                'search.courses.*' => [Rule::exists('courses', 'id')],
                 'search.models' => ['array'],
                 'search.models.type' => ['array'],
-                'search.models.*' => [Rule::in(ModelType::toArray())],
+                'search.models.*' => [Rule::exists('models', 'id')],
                 'search.quarters' => ['array'],
                 'search.quarters.*' => ['integer', 'min:1', 'max:4'],
             ]

@@ -5,23 +5,20 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\CompulsoryType;
-use App\Enums\Course;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * App\Models\Syllabus
  *
- * @method static \Illuminate\Database\Eloquent\Builder|Syllabus newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Syllabus newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Syllabus query()
- * @mixin \Eloquent
  * @property int $id
+ * @property int $course_id
  * @property string $name_ja
  * @property string $name_en
- * @property int $course
  * @property int $compulsory
  * @property int $credit
  * @property int $quarter
@@ -39,16 +36,22 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $reference
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Course $course
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Form[] $forms
  * @property-read int|null $forms_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Lesson[] $lessons
  * @property-read int|null $lessons_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SyllabusModel[] $modelPivot
+ * @property-read int|null $model_pivot_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Model[] $models
  * @property-read int|null $models_count
  * @property-read \App\Models\Score|null $score
+ * @method static \Illuminate\Database\Eloquent\Builder|Syllabus newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Syllabus newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Syllabus query()
  * @method static \Illuminate\Database\Eloquent\Builder|Syllabus whereAbstract($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Syllabus whereCompulsory($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Syllabus whereCourse($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Syllabus whereCourseId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Syllabus whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Syllabus whereCredit($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Syllabus whereEvaluation($value)
@@ -67,13 +70,13 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder|Syllabus whereTeacher($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Syllabus whereText($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Syllabus whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Syllabus extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'course',
         'compulsory',
         'credit',
         'quarter',
@@ -93,6 +96,11 @@ class Syllabus extends Model
         'reference',
     ];
 
+    public function course(): BelongsTo
+    {
+        return $this->belongsTo(Course::class);
+    }
+
     public function forms(): HasMany
     {
         return $this->hasMany(Form::class);
@@ -103,24 +111,19 @@ class Syllabus extends Model
         return $this->hasMany(Lesson::class);
     }
 
-    public function models(): HasMany
+    public function models(): BelongsToMany
     {
-        return $this->hasMany(\App\Models\Model::class);
+        return $this->belongsToMany(\App\Models\Model::class, 'syllabus_model');
+    }
+
+    public function modelPivot(): HasMany
+    {
+        return $this->hasMany(SyllabusModel::class);
     }
 
     public function score(): HasOne
     {
         return $this->hasOne(Score::class);
-    }
-
-    public function getCourse(): Course
-    {
-        return new Course($this->course);
-    }
-
-    public function getCourseLabel(): string
-    {
-        return $this->getCourse()->label();
     }
 
     public function getCompulsory(): CompulsoryType

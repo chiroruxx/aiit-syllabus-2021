@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Enums\CompulsoryType;
-use App\Enums\Course;
 use App\Enums\FormDegree;
 use App\Enums\FormType;
 use App\Enums\LessonSatelliteType;
 use App\Enums\LessonType;
+use App\Models\Course;
 use App\Models\Form;
 use App\Models\Lesson;
 use App\Models\Syllabus;
 use DomainException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -31,6 +32,8 @@ class SyllabusSeeder extends Seeder
      */
     public function run()
     {
+        $courses = Course::all();
+
         $syllabi = [];
 
         $path = storage_path('app/seeds/syllabi.csv');
@@ -58,13 +61,11 @@ class SyllabusSeeder extends Seeder
                 $heading = $this->getHeading($key);
                 // FIXME match式にする
                 if ($heading === 'コース名') {
-                    $syllabus['course'] = match ($column) {
-                        '情報アーキテクチャコース' => Course::INFO,
-                        '創造技術コース' => Course::CREATION,
-                        '事業設計工学コース' => Course::BUSINESS,
-                        '全コース共通' => Course::ALL,
-                        default => throw new DomainException("Course {$column} is not defined."),
-                    };
+                    $course = $courses->where('name', '=', $column)->first();
+                    if ($course === null) {
+                        throw new ModelNotFoundException("Course {$column} is not found.");
+                    }
+                    $syllabus['course'] = $course;
                 } elseif ($heading === '必修・選択') {
                     $value = match ($column) {
                         '必修' => CompulsoryType::COMPULSORY,
@@ -147,7 +148,9 @@ class SyllabusSeeder extends Seeder
 
         DB::transaction(function () use ($syllabi) {
             foreach ($syllabi as $record) {
-                $syllabus = Syllabus::create(Arr::except($record, ['forms', 'lessons']));
+                $syllabus = new Syllabus(Arr::except($record, ['forms', 'lessons', 'course']));
+                $syllabus->course()->associate($record['course']);
+                $syllabus->save();
 
                 $forms = array_map(fn(array $attributes): Form => new Form($attributes), $record['forms']);
                 $syllabus->forms()->saveMany($forms);

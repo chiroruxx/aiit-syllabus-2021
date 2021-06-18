@@ -29,7 +29,7 @@
             </div>
             <span>人物像: </span>
             <div>
-                <template v-for="modelType in modelTypes">
+                <template v-for="modelType in models">
                     <label class="inline-block mr-4">
                         <input type="checkbox"
                            name="search[model][types][]"
@@ -56,7 +56,7 @@ export default {
         return {
             courses: [],
             quarters: [],
-            modelTypes: [],
+            models: [],
         }
     },
 
@@ -72,9 +72,9 @@ export default {
                 label: `${value}Q`,
                 checked: false
             }))
-            this.modelTypes = response.data.modelTypes.map((modelType) => {
-                modelType.checked = false
-                return modelType
+            this.models = response.data.models.map((model) => {
+                model.checked = false
+                return model
             })
         })
         this.setDefaultValue()
@@ -105,13 +105,13 @@ export default {
                     })
                 }
                 if (key === 'search[model][types][]') {
-                    this.modelTypes = this.modelTypes.map((modelType) => {
-                        if (modelType.value !== parseInt(value)) {
-                            return modelType
+                    this.models = this.models.map((model) => {
+                        if (model.value !== parseInt(value)) {
+                            return model
                         }
 
-                        modelType.checked = true
-                        return modelType
+                        model.checked = true
+                        return model
                     })
                 }
             })
@@ -129,7 +129,7 @@ export default {
                 })
             }
             if (!searchParams.has('search[model][types][]')) {
-                this.modelTypes = this.modelTypes.map((modelType) => {
+                this.models = this.models.map((modelType) => {
                     modelType.checked = true
                     return modelType
                 })

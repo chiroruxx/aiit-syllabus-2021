@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Enums\Course;
-use App\Enums\ModelType;
 use App\Models\Syllabus;
 use App\Services\SyllabusService;
 use Illuminate\Contracts\View\View;
@@ -33,10 +31,10 @@ class SyllabusController extends Controller
             [
                 'search' => ['array'],
                 'search.courses' => ['array'],
-                'search.courses.*' => [Rule::in(Course::toArray())],
+                'search.courses.*' => [Rule::exists('courses', 'id')],
                 'search.models' => ['array'],
                 'search.models.type' => ['array'],
-                'search.models.*' => [Rule::in(ModelType::toArray())],
+                'search.models.*' => [Rule::exists('models', 'id')],
                 'search.quarters' => ['array'],
                 'search.quarters.*' => ['integer', 'min:1', 'max:4'],
             ]

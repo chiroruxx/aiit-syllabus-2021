@@ -25,7 +25,7 @@
         @foreach($syllabi as $syllabus)
             <tr class="even:bg-gray-100 hover:bg-gray-200">
                 <td class="py-2 pl-4"><a href="{{ route('syllabus.show', $syllabus) }}" class="underline">{{ $syllabus->name_ja }}</a></td>
-                <td class="py-2">{{ $syllabus->getCourseLabel() }}</td>
+                <td class="py-2">{{ $syllabus->course->name }}</td>
                 <td class="py-2 text-center">{{ $syllabus->quarter }}Q</td>
             </tr>
         @endforeach

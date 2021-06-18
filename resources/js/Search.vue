@@ -115,26 +115,6 @@ export default {
                     })
                 }
             })
-
-            if (!searchParams.has('search[courses][]')) {
-                this.courses = this.courses.map((course) => {
-                    course.checked = true
-                    return course
-                })
-            }
-            if (!searchParams.has('search[quarters][]')) {
-                this.quarters = this.quarters.map((quarter) => {
-                    quarter.checked = true
-                    return quarter
-                })
-            }
-            if (!searchParams.has('search[model][types][]')) {
-                this.models = this.models.map((modelType) => {
-                    modelType.checked = true
-                    return modelType
-                })
-            }
-
         }
     }
 };

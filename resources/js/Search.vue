@@ -4,14 +4,10 @@
             <span>コース: </span>
             <div>
                 <template v-for="course in courses">
-                    <label class="inline-block mr-4">
-                        <input type="checkbox"
-                               name="search[courses][]"
-                               :value="course.value"
-                               v-model="course.checked"
-                        >
-                        {{ course.label }}
-                    </label>
+                    <check-box-group
+                        :parent="course"
+                        :children="course.models"
+                    />
                 </template>
             </div>
             <span>時期: </span>
@@ -27,19 +23,6 @@
                     </label>
                 </template>
             </div>
-            <span>人物像: </span>
-            <div>
-                <template v-for="modelType in models">
-                    <label class="inline-block mr-4">
-                        <input type="checkbox"
-                           name="search[model][types][]"
-                           :value="modelType.value"
-                           v-model="modelType.checked"
-                        >
-                    {{ modelType.label }}
-                    </label>
-                </template>
-            </div>
         </div>
         <button type="submit" class="border rounded-md mt-8 px-4 py-2 bg-transparent">
             <search-icon />
@@ -50,13 +33,14 @@
 <script>
 import axios from 'axios'
 import SearchIcon from "./SearchIcon";
+import CheckBoxGroup from "./CheckBoxGroup";
+
 export default {
-    components: {SearchIcon},
+    components: {CheckBoxGroup, SearchIcon},
     data() {
         return {
             courses: [],
             quarters: [],
-            models: [],
         }
     },
 
@@ -65,6 +49,12 @@ export default {
         .then((response) => {
             this.courses = response.data.courses.map((course) => {
                 course.checked = false
+                course.name = 'search[courses][]'
+                course.models.map((model) => {
+                    model.checked = false
+                    model.name = 'search[model][types][]'
+                    return model
+                })
                 return course
             })
             this.quarters = response.data.quarters.map(value => ({
@@ -72,10 +62,6 @@ export default {
                 label: `${value}Q`,
                 checked: false
             }))
-            this.models = response.data.models.map((model) => {
-                model.checked = false
-                return model
-            })
         })
         this.setDefaultValue()
     },
@@ -105,13 +91,14 @@ export default {
                     })
                 }
                 if (key === 'search[model][types][]') {
-                    this.models = this.models.map((model) => {
-                        if (model.value !== parseInt(value)) {
-                            return model
-                        }
+                    this.courses.forEach((course) => {
+                        course.models.forEach((model) => {
+                            if (model.value !== parseInt(value)) {
+                                return
+                            }
 
-                        model.checked = true
-                        return model
+                            model.checked = true
+                        })
                     })
                 }
             })

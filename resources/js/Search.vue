@@ -1,33 +1,35 @@
 <template>
-    <form method="GET" class="my-16 pl-4">
-        <div class="grid gap-y-4" style="grid-template-columns: 5rem 1fr;">
-            <span>コース: </span>
-            <div>
-                <template v-for="course in courses">
-                    <check-box-group
-                        :parent="course"
-                        :children="course.models"
-                    />
-                </template>
+    <template v-if="!loading">
+        <form method="GET" class="my-16 pl-4">
+            <div class="grid gap-y-4" style="grid-template-columns: 5rem 1fr;">
+                <span>コース: </span>
+                <div>
+                    <template v-for="course in courses">
+                        <check-box-group
+                            :parent="course"
+                            :children="course.models"
+                        />
+                    </template>
+                </div>
+                <span>時期: </span>
+                <div>
+                    <template v-for="quarter in quarters">
+                        <label class="inline-block mr-4">
+                            <input type="checkbox"
+                                   name="search[quarters][]"
+                                   :value="quarter.value"
+                                   v-model="quarter.checked"
+                            >
+                            {{ quarter.label }}
+                        </label>
+                    </template>
+                </div>
             </div>
-            <span>時期: </span>
-            <div>
-                <template v-for="quarter in quarters">
-                    <label class="inline-block mr-4">
-                        <input type="checkbox"
-                               name="search[quarters][]"
-                               :value="quarter.value"
-                               v-model="quarter.checked"
-                        >
-                        {{ quarter.label }}
-                    </label>
-                </template>
-            </div>
-        </div>
-        <button type="submit" class="border rounded-md mt-8 px-4 py-2 bg-transparent">
-            <search-icon />
-        </button>
-    </form>
+            <button type="submit" class="border rounded-md mt-8 px-4 py-2 bg-transparent">
+                <search-icon/>
+            </button>
+        </form>
+    </template>
 </template>
 
 <script>
@@ -41,29 +43,31 @@ export default {
         return {
             courses: [],
             quarters: [],
+            loading: true,
         }
     },
 
     async mounted() {
         await axios.get('/api/master')
-        .then((response) => {
-            this.courses = response.data.courses.map((course) => {
-                course.checked = false
-                course.name = 'search[courses][]'
-                course.models.map((model) => {
-                    model.checked = false
-                    model.name = 'search[model][types][]'
-                    return model
+            .then((response) => {
+                this.courses = response.data.courses.map((course) => {
+                    course.checked = false
+                    course.name = 'search[courses][]'
+                    course.models.map((model) => {
+                        model.checked = false
+                        model.name = 'search[model][types][]'
+                        return model
+                    })
+                    return course
                 })
-                return course
+                this.quarters = response.data.quarters.map(value => ({
+                    value,
+                    label: `${value}Q`,
+                    checked: false
+                }))
             })
-            this.quarters = response.data.quarters.map(value => ({
-                value,
-                label: `${value}Q`,
-                checked: false
-            }))
-        })
         this.setDefaultValue()
+        this.loading = false
     },
 
     methods: {
